@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import React from 'react';
 import { Layout } from '@/components/Layout';
 import { SearchBar } from '@/components/SearchBar';
 import { ArticleList } from '@/components/ArticleList';
@@ -22,7 +22,7 @@ export default function HomePage() {
     enabled: false, // 수동으로 검색 실행
   });
 
-  const articles = response?.items || [];
+  const articles = response?.results || [];
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) return;
@@ -34,8 +34,8 @@ export default function HomePage() {
     try {
       // 검색 실행
       const result = await refetch();
-      if (result.data?.items) {
-        setResults(result.data.items);
+      if (result.data?.results) {
+        setResults(result.data.results);
       }
     } catch (error) {
       console.error('검색 중 오류:', error);

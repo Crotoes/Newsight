@@ -28,10 +28,29 @@ export function useArticleSearch(options: {
   
   return useQuery({
     queryKey: ['articles', 'search', { query, category, page, limit }],
-    queryFn: () => articleApi.getArticles(page, limit, undefined, { 
-      search: query, 
-      category 
-    }),
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        query,
+        limit: limit.toString(),
+      });
+      
+      if (category) {
+        params.append('category_filter', category);
+      }
+      
+      const response = await fetch(`/api/v1/search?${params}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    },
     enabled: Boolean(enabled && query),
     staleTime: 1000 * 60 * 5, // 5분
   });
